@@ -7,6 +7,8 @@ import { envVars } from './constants/envVars';
 import { getAllContacts, getContactById } from './services/contacts';
 
 const PORT = env(envVars.PORT, 3000);
+
+
 export const setupServer = () => {
     const app = express();
     app.use(cors());
@@ -24,37 +26,34 @@ export const setupServer = () => {
             data: contacts,
         });
     });
-
     app.get('/contacts/:contactId', async (req, res, next) => {
         try {
             const id = req.params.contactId;
             if (!mongoose.Types.ObjectId.isValid(id)) {
                 return res.status(400).json({
                     status: 400,
-                    message: 'Invalid contact id: ${id}',
+                    message: `Invalid contact ID: ${id}`,
                 });
             }
-        });
+            const contact = await getContactById(id);
+            if (!contact) {
+                return res.status(404).json({
+                    status: 404,
+                    message: `Contact with id ${id} not found`,
+                });
+            }
 
-    const contact = await getContactById(id);
-    if (!contact) {
-        return res.status(404).json({
-            status: 404,
-            message: 'Contact with id ${id} not found',
-        });
-    }
-
-    res.json({
-        status: 200,
-        message: 'Success found contact',
-        data: contact,
+            res.json({
+                status: 200,
+                message: 'Success get contact',
+                data: contact,
+            });
+        } catch (error) {
+            next(error);
+        }
     });
-} catch (error) {
-    next(error);
-}
-});
 
-app.use((error, req, res, next) => {
+    app.use((error, req, res, next) => {
     res.status(500).json({
         message: 'Something went wrong',
         error: error.message,
