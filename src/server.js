@@ -2,12 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import pino from 'pino';
 import mongoose from 'mongoose';
-import { env } from './utils/env';
-import { envVars } from './constants/envVars';
-import { getAllContacts, getContactById } from './services/contacts';
+import { env } from './utils/env.js';
+import { envVars } from './constants/envVars.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
 
 const PORT = env(envVars.PORT, 3000);
-
 
 export const setupServer = () => {
     const app = express();

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { envVars } from '../constants/envVars';
-import { env } from '../utils/env';
+import { envVars } from '../constants/envVars.js';
+import { env } from '../utils/env.js';
 
 export const initMongoConnection = async () => {
     const connectionLink = `mongodb+srv://${env(envVars.MONGODB_USER)}:${env(envVars.MONGODB_PASSWORD)}@${env(envVars.MONGODB_URL)}/${env(envVars.MONGODB_DB)},
