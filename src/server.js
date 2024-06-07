@@ -22,7 +22,7 @@ export const setupServer = () => {
         const contacts = await getAllContacts();
         res.json({
             status: 200,
-            message: 'Success get contacts',
+            message: 'Successfully found contacts!',
             data: contacts,
         });
     });
@@ -45,7 +45,7 @@ export const setupServer = () => {
 
             res.json({
                 status: 200,
-                message: 'Success get contact',
+                message: 'Successfully found contacts!',
                 data: contact,
             });
         } catch (error) {
@@ -67,6 +67,6 @@ app.use('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
 };
