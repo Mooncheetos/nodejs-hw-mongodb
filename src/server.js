@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import pino from 'pino';
+import pino from 'pino-http';
 import mongoose from 'mongoose';
 import { env } from './utils/env.js';
 import { envVars } from './constants/envVars.js';
@@ -15,8 +15,7 @@ export const setupServer = () => {
         transport: {
             target: 'pino-pretty',
         },
-    }),
-    );
+    }));
     app.get('/contacts', async (req, res) => {
         const contacts = await getAllContacts();
         res.json({
@@ -52,19 +51,17 @@ export const setupServer = () => {
         }
     });
 
+    app.use('*', (req, res) => {
+    res.status(404).json({
+        message: 'Route not found',
+    });
+});
     app.use((error, req, res, next) => {
     res.status(500).json({
         message: 'Something went wrong',
         error: error.message,
     });
-});
-
-app.use('*', (req, res) => {
-    res.status(404).json({
-        message: 'Route not found',
     });
-});
-
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
