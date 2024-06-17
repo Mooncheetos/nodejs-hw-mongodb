@@ -20,7 +20,7 @@ export const getContactsController = async (req, res) => {
         data: contacts,
     });
 };
-export const getContactsByIdController = async (req, res, next) => {
+export const getContactByIdController = async (req, res, next) => {
     const id = req.params.contactId;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         next(createHttpError(400, `Invalid contact ID: ${id}`));
