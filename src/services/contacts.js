@@ -10,7 +10,7 @@ export const getAllContacts = async () => {
 export const getContactById = async (id) => {
     return await Contact.findById(id);
 };
-export const deleteContactById = async (id) => {
+export const deleteContact = async (id) => {
     const contact = await Contact.findOneAndDelete({
         _id: id,
     });
