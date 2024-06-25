@@ -13,6 +13,8 @@
   "author": "Ivan Lohachov <bysiahe@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@hapi/hoek": "^11.0.4",
+    "@hapi/topo": "^6.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
