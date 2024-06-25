@@ -6,12 +6,13 @@ import {
 } from '../controllers/contacts.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema, updateContactSchema } from '../validation/contacts.js';
+import { validateMongoId } from '../middlewares/validateMongoId.js';
 
 const router = Router();
 router.post('/contacts', validateBody(createContactSchema), ctrlWrapper(createContactController));
 router.get('/contacts', ctrlWrapper(getContactsController));
 router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
-
+router.use('/contacts/:contactId', validateMongoId('contactId'));
 router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 
 router.put('/contacts/:contactId',validateBody(updateContactSchema), ctrlWrapper(putContactController));
