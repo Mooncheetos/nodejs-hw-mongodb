@@ -10,23 +10,28 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-export const getContactsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-  const { sortBy, sortOrder } = parseSortParams(req.query);
-  const filter = parseFilterParams(req.query);
+export const getContactsController = async (req, res, next) => {
+  try {
+    const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filter = parseFilterParams(req.query);
 
-  const contacts = await getAllContacts({
-    page,
-    perPage,
-    sortBy,
-    sortOrder,
-    filter,
-  });
-  res.json({
-    status: 200,
-    message: 'Successfully found contacts!',
-    data: contacts,
-  });
+    const contacts = await getAllContacts({
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+      filter,
+    });
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: contacts,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getContactByIdController = async (req, res, next) => {
@@ -39,20 +44,24 @@ export const getContactByIdController = async (req, res, next) => {
     return;
   }
 
-  res.json({
+  res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
     data: contact,
   });
 };
 
-export const createContactController = async (req, res) => {
-  const contact = await createContact(req.body);
-  res.json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: contact,
-  });
+export const createContactController = async (req, res, next) => {
+  try {
+    const contact = await createContact(req.body);
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully created a contact!',
+      data: contact,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const deleteContactController = async (req, res, next) => {
@@ -68,30 +77,38 @@ export const deleteContactController = async (req, res, next) => {
   res.status(204).send();
 };
 
-export const patchContactController = async (req, res) => {
-  const id = req.params.contactId;
+export const patchContactController = async (req, res, next) => {
+  try {
+    const id = req.params.contactId;
 
-  const result = await updateContact(id, req.body);
+    const result = await updateContact(id, req.body);
 
-  res.json({
-    status: 200,
-    message: 'Successfully patched a contact!',
-    data: result.contact,
-  });
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully patched a contact!',
+      data: result.contact,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const putContactController = async (req, res) => {
-  const id = req.params.contactId;
+export const putContactController = async (req, res, next) => {
+  try {
+    const id = req.params.contactId;
 
-  const result = await updateContact(id, req.body, {
-    upsert: true,
-  });
+    const result = await updateContact(id, req.body, {
+      upsert: true,
+    });
 
-  const status = result.isNew ? 201 : 200;
+    const status = result.isNew ? 201 : 200;
 
-  res.json({
-    status: status,
-    message: 'Successfully upserted a contact!',
-    data: result.contact,
-  });
+    res.status(status).json({
+      status: status,
+      message: 'Successfully upserted a contact!',
+      data: result.contact,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

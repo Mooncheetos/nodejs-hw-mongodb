@@ -19,16 +19,16 @@ export const getAllContacts = async ({
     contactsQuery.where('contactType').equals(filter.contactType);
   }
 
-  if (filter.isFavourite) {
+  if (filter.isFavourite !== undefined) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
+
   const [contactsCount, contacts] = await Promise.all([
     Contact.find().merge(contactsQuery).countDocuments(),
-    Contact.find()
-      .merge(contactsQuery)
+    contactsQuery
       .skip(skip)
       .limit(limit)
-      .sort({ [sortBy]: sortOrder })
+      .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
       .exec(),
   ]);
 
@@ -43,31 +43,35 @@ export const getAllContacts = async ({
     ...paginationData,
   };
 };
+
 export const createContact = async (payload) => {
-    return await Contact.create(payload);
+  return await Contact.create(payload);
 };
+
 export const getContactById = async (id) => {
-    return await Contact.findById(id);
+  return await Contact.findById(id);
 };
+
 export const deleteContact = async (id) => {
-    const contact = await Contact.findOneAndDelete({
-        _id: id,
-    });
-    return contact;
+  const contact = await Contact.findOneAndDelete({
+    _id: id,
+  });
+  return contact;
 };
+
 export const updateContact = async (id, payload, options = {}) => {
-    const rawResult = await Contact.findOneAndUpdate(
-        { _id: id },
-        payload,
-        { new: true, includeResultMetadata: true, ...options},
-    );
+  const rawResult = await Contact.findOneAndUpdate(
+    { _id: id },
+    payload,
+    { new: true, includeResultMetadata: true, ...options }
+  );
 
-    if (!rawResult || !rawResult.value) {
-        throw createHttpError(404, 'Contact not found');
-    }
+  if (!rawResult) {
+    throw createHttpError(404, 'Contact not found');
+  }
 
-    return {
-        contact: rawResult.value,
-        isNew: Boolean(rawResult.lastErrorObject?.upserted),
-    };
+  return {
+    contact: rawResult,
+    isNew: Boolean(rawResult.lastErrorObject?.upserted),
+  };
 };
