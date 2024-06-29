@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import ContactsRouter from './routers/contacts.js';
+import cookieParser from 'cookie-parser';
+import router from './routers/index.js';
 import { env } from './utils/env.js';
 import { envVars } from './constants/envVars.js';
 import { errorHandler } from './middlewares/errorHandlers.js';
@@ -18,7 +19,8 @@ export const setupServer = () => {
             target: 'pino-pretty',
         },
     }));
-    app.use(ContactsRouter);
+    app.use(cookieParser());
+    app.use(router);
     app.use(errorHandler);
     app.use('*', notFoundHandler);
     app.listen(PORT, () => {
