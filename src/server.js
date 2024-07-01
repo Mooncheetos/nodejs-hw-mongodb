@@ -4,11 +4,11 @@ import pino from 'pino-http';
 import cookieParser from 'cookie-parser';
 import router from './routers/index.js';
 import { env } from './utils/env.js';
-import { envVars } from './constants/envVars.js';
+import { ENV_VARS, UPLOAD_DIR } from './constants/envVars.js';
 import { errorHandler } from './middlewares/errorHandlers.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
-const PORT = env(envVars.PORT, 3000);
+const PORT = env(ENV_VARS.PORT, 3000);
 
 export const setupServer = () => {
     const app = express();
@@ -21,6 +21,7 @@ export const setupServer = () => {
     }));
     app.use(cookieParser());
     app.use(router);
+    app.use('/uploads', express.static(UPLOAD_DIR));
     app.use(errorHandler);
     app.use('*', notFoundHandler);
     app.listen(PORT, () => {

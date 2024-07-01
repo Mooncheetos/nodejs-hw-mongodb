@@ -125,6 +125,9 @@ dist
 .DS_Store
 .idea
 
+/temp
+/uploads
+
 # yarn v2
 .yarn/cache
 .yarn/unplugged
