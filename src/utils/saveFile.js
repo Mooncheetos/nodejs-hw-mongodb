@@ -1,4 +1,4 @@
-import { ENV_VARS } from '../constants/envVars.js';
+import { ENV_VARS } from '../constants/index.js';
 import { env } from './env.js';
 import { saveFileToCloudinary } from './saveFileToCloudinary.js';
 import { saveFileToUploadDir } from './saveFileToUploadDir.js';

@@ -1,3 +1,4 @@
+import { THIRTY_DAYS } from '../constants/index.js';
 import {
   loginUser,
   logoutUser,
@@ -6,7 +7,6 @@ import {
   requestResetToken,
   resetPassword,
 } from '../services/auth.js';
-import { THIRTY_DAYS } from '../constants/envVars.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -86,6 +86,7 @@ export const requestResetEmailController = async (req, res) => {
 
 export const resetPasswordController = async (req, res) => {
   const sessionId = req.cookies.sessionId;
+
   await resetPassword(req.body, sessionId);
 
   res.clearCookie('sessionId');

@@ -4,12 +4,12 @@ import bcrypt from 'bcrypt';
 import { sessionsCollection } from '../db/models/session.js';
 import { randomBytes } from 'crypto';
 import {
+  ENV_VARS,
   FIFTEEN_MINUTES,
   SMTP,
-  ENV_VARS,
   TEMPLATES_DIR,
   THIRTY_DAYS,
-} from '../constants/envVars.js';
+} from '../constants/index.js';
 import jwt from 'jsonwebtoken';
 import { env } from '../utils/env.js';
 import { sendEmail } from '../utils/sendEmail.js';
@@ -39,13 +39,13 @@ export const loginUser = async (payload) => {
     email: payload.email,
   });
   if (!user) {
-   throw createHttpError(404, 'User not found');
+    throw createHttpError(404, 'User not found');
   }
 
   const isEqual = await bcrypt.compare(payload.password, user.password);
 
   if (!isEqual) {
-   throw createHttpError(401, 'Unauthorized');
+    throw createHttpError(401, 'Unauthorized');
   }
 
   await sessionsCollection.deleteOne({ userId: user._id });

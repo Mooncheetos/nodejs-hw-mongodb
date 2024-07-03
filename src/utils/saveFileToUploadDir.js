@@ -1,6 +1,6 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import { ENV_VARS, UPLOAD_DIR } from '../constants/envVars.js';
+import { ENV_VARS, UPLOAD_DIR } from '../constants/index.js';
 import { env } from './env.js';
 
 export const saveFileToUploadDir = async (file) => {

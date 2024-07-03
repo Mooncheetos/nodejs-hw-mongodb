@@ -10,34 +10,30 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-export const getContactsController = async (req, res, next) => {
-  try {
-    const { page, perPage } = parsePaginationParams(req.query);
-    const { sortBy, sortOrder } = parseSortParams(req.query);
-    const filter = parseFilterParams(req.query);
+export const getContactsController = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
 
-    const contacts = await getAllContacts({
-      page,
-      perPage,
-      sortBy,
-      sortOrder,
-      filter,
-      userId: req.user._id,
-    });
-
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  } catch (error) {
-    next(error);
-  }
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+    userId: req.user._id,
+  });
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: contacts,
+  });
 };
 
 export const getContactByIdController = async (req, res, next) => {
   const id = req.params.contactId;
   const userId = req.user._id;
+
   const contact = await getContactById(id, userId);
 
   if (!contact) {
@@ -45,31 +41,30 @@ export const getContactByIdController = async (req, res, next) => {
     return;
   }
 
-  res.status(200).json({
+  res.json({
     status: 200,
     message: 'Successfully found contacts!',
     data: contact,
   });
 };
 
-export const createContactController = async (req, res, next) => {
-  try {
-    const userId = req.user._id;
-    const { body, file } = req;
-    const contact = await createContact({ ...body, photo: file }, userId);
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully created a contact!',
-      data: contact,
-    });
-  } catch (error) {
-    next(error);
-  }
+export const createContactController = async (req, res) => {
+  const userId = req.user._id;
+  const { body, file } = req;
+
+  const contact = await createContact({ ...body, photo: file }, userId);
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: contact,
+  });
 };
 
 export const deleteContactController = async (req, res, next) => {
   const id = req.params.contactId;
   const userId = req.user._id;
+
   const contact = await deleteContact(id, userId);
 
   if (!contact) {
@@ -80,41 +75,34 @@ export const deleteContactController = async (req, res, next) => {
   res.status(204).send();
 };
 
-export const patchContactController = async (req, res, next) => {
-  try {
-    const id = req.params.contactId;
-    const userId = req.user._id;
-    const { body, file } = req;
-    const result = await updateContact(id, { ...body, photo: file }, userId);
+export const patchContactController = async (req, res) => {
+  const id = req.params.contactId;
+  const userId = req.user._id;
+  const { body, file } = req;
 
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully patched a contact!',
-      data: result.contact,
-    });
-  } catch (error) {
-    next(error);
-  }
+  const result = await updateContact(id, { ...body, photo: file }, userId);
+
+  res.json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result.contact,
+  });
 };
 
-export const putContactController = async (req, res, next) => {
-  try {
-    const id = req.params.contactId;
-    const userId = req.user._id;
-    const { body, file } = req;
+export const putContactController = async (req, res) => {
+  const id = req.params.contactId;
+  const userId = req.user._id;
+  const { body, file } = req;
 
-    const result = await updateContact(id, { ...body, photo: file }, userId, {
-      upsert: true,
-    });
+  const result = await updateContact(id, { ...body, photo: file }, userId, {
+    upsert: true,
+  });
 
-    const status = result.isNew ? 201 : 200;
+  const status = result.isNew ? 201 : 200;
 
-    res.status(status).json({
-      status: status,
-      message: 'Successfully upserted a contact!',
-      data: result.contact,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.json({
+    status: status,
+    message: 'Successfully upserted a contact!',
+    data: result.contact,
+  });
 };

@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors';
 import { Contact } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { SORT_ORDER } from '../constants/envVars.js';
-import { saveFileToCloudinary  } from '../utils/saveFileToCloudinary.js';
+import { SORT_ORDER } from '../constants/index.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getAllContacts = async ({
   page = 1,
@@ -31,7 +31,7 @@ export const getAllContacts = async ({
       .merge(contactsQuery)
       .skip(skip)
       .limit(limit)
-      .sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
+      .sort({ [sortBy]: sortOrder })
       .exec(),
   ]);
 
@@ -53,6 +53,7 @@ export const getContactById = async (id, userId) => {
 
 export const createContact = async ({ photo, ...payload }, userId) => {
   const url = await saveFileToCloudinary(photo);
+
   const contactData = {
     ...payload,
     photo: url,
@@ -77,6 +78,7 @@ export const updateContact = async (
   options = {},
 ) => {
   const url = await saveFileToCloudinary(photo);
+
   const rawResult = await Contact.findOneAndUpdate(
     {
       _id: id,
